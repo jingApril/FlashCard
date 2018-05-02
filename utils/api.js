@@ -1,5 +1,9 @@
 import React from 'react'
 import { AsyncStorage } from 'react-native'
+//import { formatCalendarResults, DECK_STORAGE_KEY } from './_calendar'
+
+
+export const DECK_STORAGE_KEY = 'decks:react-native-flashcards'
 
 let data = {
   React: {
@@ -27,9 +31,19 @@ let data = {
 }
 
 
-export function fetchDecks(){
-  return AsyncStorage.getItem(CALENDAR_STORAGE_KEY)
-  .then(formatCalendarResults)
+
+
+export function getDecks () {
+  return AsyncStorage.getItem(DECK_STORAGE_KEY)
+      .then((results)=>{
+        return results === null ? initialData() : JSON.parse(results)
+      })
+}
+
+
+export function initialData() {
+    AsyncStorage.setItem(DECK_STORAGE_KEY, JSON.stringify(data));
+    return data;
 }
 
 export function submitEntry ({ entry, key}) {

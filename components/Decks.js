@@ -2,8 +2,24 @@ import React, { Component } from 'react'
 import { View, Text, StyleSheet, Platform, StatusBar} from 'react-native'
 import { purple, white } from '../utils/colors'
 import { connect } from 'react-redux'
+import { getDecks } from '../utils/api'
+import { AppLoading } from 'expo'
 
 class Decks extends Component {
+
+  state = {
+      ready: false,
+  }
+
+  componentDidMount () {
+    const { dispatch } = this.props
+    getDecks()
+      .then((decks) => dispatch(getDecks(decks)))
+      .then(() => this.setState(() => ({ready: true})))
+
+
+  }
+
 
     render() {
         return (
@@ -40,9 +56,9 @@ const styles = StyleSheet.create({
 })
 
 
-function mapStateToProps (cards) {
+function mapStateToProps (decks) {
   return {
-    cards
+    decks
   }
 }
 
