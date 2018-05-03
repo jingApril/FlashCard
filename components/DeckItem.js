@@ -6,10 +6,13 @@ export default function  DeckItem ({ item }) {
 		return <View style={styles.deck}>
             <View style={{justifyContent: 'center', alignItems: 'center'}}>
                 <Text style={styles.title}>{item.title}</Text>
-                <Text style={styles.length}>
+                {/* <Text style={styles.length}>
                     {item.questions.length} cards
-                </Text>
-                {/* <Text style={styles.info}>{questions ? questions.length : 0}{questions ? questions.length > 1 ? ` cards` : ` card` : 0 }</Text> */}
+                </Text> */}
+                <Text style={styles.length}>
+									{item.questions ? item.questions.length : 0}
+									{item.questions ? item.questions.length > 1 ? ` cards` : ` card` : 0 }
+								</Text>
             </View>
         </View>
 

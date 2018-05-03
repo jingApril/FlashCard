@@ -1,34 +1,34 @@
 import React from 'react'
 import { View, StyleSheet, Text } from 'react-native'
-import { purple,white } from '../utils/colors'
+import { purple,white,gray } from '../utils/colors'
 import { connect } from 'react-redux'
 import { addCard } from  '../actions'
 import { newCard } from '../utils/api'
 
 import AddCard from './AddCard'
 import TextButton from './TextButton'
-import TitleHeader from './TitleHeader'
 
 class DeckDetail extends React.Component {
 
 
+  static navigationOptions =({ navigation }) =>{
+      const {title} =navigation.state.params
+      return  {
+         title
+        //title: 'Welcome',
+      }
 
-  //  static navigationOptions = ({ navigation }) => {
-	// 	const { title } = navigation.state.params
-	// 	return {
-  //        title
-  //       }
-  //
-  // }
+  }
+
+
 render(){
     return (
-      <View>
-          <TitleHeader />
-          <Text style={{color: purple, fontSize: 25}}>
+      <View style={styles.row}>
+        <Text style={{color: purple, fontSize: 25}}>
       		Deckdetail
           </Text>
-          <TextButton style={{padding: 10}}>Add Card</TextButton>
-          <TextButton style={{padding: 10}}>Start Quiz</TextButton>
+          <TextButton style={[styles.submitBtnText, {backgroundColor: gray}]}>Add Card</TextButton>
+          <TextButton style={styles.submitBtnText}>Start Quiz</TextButton>
       </View>
     )
 }
@@ -42,7 +42,6 @@ const styles = StyleSheet.create({
         backgroundColor: white
     },
     row:{
-        flexDirection: 'row',
         flex: 1,
         alignItems: 'center',
     },
@@ -81,14 +80,12 @@ const styles = StyleSheet.create({
 
 
 
-// function  mapStateToProps ( state, { navigation }) {
-//   const { item } = navigation.state.params
-//   return {
-//     item
-//   }
-// }
-//
-// export default connect(mapStateToProps,)(DeckDetail)
+function mapStateToProps (state, {navigation}) {
+  const { title } = navigation.state.params
+  	return 	{
+      title
+    }
+   console.log(title)
+}
 
-
-export default DeckDetail
+export default connect(mapStateToProps) (DeckDetail)

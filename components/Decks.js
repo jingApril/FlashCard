@@ -7,7 +7,7 @@ import { purple, white } from '../utils/colors'
 import { AppLoading } from 'expo'
 import DeckDetail from './DeckDetail'
 import DeckItem from './DeckItem'
-import TitleHeader from './TitleHeader'
+
 
 
 class Decks extends Component {
@@ -25,11 +25,11 @@ class Decks extends Component {
 
   }
 
-  renderItem = ({ item }) => (
+  renderItem = ({ item}) => (
    <View style={styles.item}>
-       <TouchableOpacity onPress ={() => this.props.navigation.navigate('DeckDetail',item)}>
-           {/* <TitleHeader title = {item.title} /> */}
-           <DeckItem item = {item}/>
+       <TouchableOpacity onPress ={() => this.props.navigation.navigate('DeckDetail',  { title: item.title})}>
+          <DeckItem
+            item = {item}/>
        </TouchableOpacity>
    </View>
  )
@@ -45,17 +45,13 @@ class Decks extends Component {
 
         return (
             <View style={styles.container}>
-
                 <FlatList
                     data={Object.values(decks)}
                     renderItem={this.renderItem}
-                    //renderItem={({item}) => <Text style={styles.item}>{item.key}</Text>}
-                />
-
-
-
+                    //keyExtractor={(item, index) => index}
+                    keyExtractor={item => item.title}
+                    />
             </View>
-
         )
     }
 
