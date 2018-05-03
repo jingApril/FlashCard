@@ -1,13 +1,9 @@
-import {
-  FETCH_DECKS,
-  ADD_DECK,
-  ADD_CARD,
-  ADD_QUESTION
-} from "../actions";
+import { FETCH_DECKS, ADD_DECK, ADD_CARD, ADD_QUESTION } from "../actions"
 
-function alldecks (state = {}, action){
+
+export default function (state = {}, action){
 	switch (action.type) {
-		case 'FETCH_DECK':
+		case 'FETCH_DECKS':
 			return {
 				...state,
 				...action.decks,
@@ -31,5 +27,3 @@ function alldecks (state = {}, action){
 			return state
 	}
 }
-
-export default alldecks
