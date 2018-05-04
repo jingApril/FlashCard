@@ -8,35 +8,32 @@ import { AppLoading } from 'expo'
 import DeckDetail from './DeckDetail'
 import DeckItem from './DeckItem'
 
-
-
 class Decks extends Component {
 
-  state = {
+    state = {
       ready: false,
-  }
+    }
 
-  componentDidMount () {
+    componentDidMount () {
+        const { dispatch } = this.props
+        fetchDecks()
+            .then((decks) => dispatch(getDecks(decks)))
+            .then(() => this.setState(() => ({ready: true})))
+    }
 
-    const { dispatch } = this.props
-    fetchDecks()
-        .then((decks) => dispatch(getDecks(decks)))
-        .then(() => this.setState(() => ({ready: true})))
-
-  }
-
-  renderItem = ({ item}) => (
-   <View style={styles.item}>
-       <TouchableOpacity onPress ={() => this.props.navigation.navigate('DeckDetail',  { title: item.title})}>
-          <DeckItem
-            item = {item}/>
-       </TouchableOpacity>
-   </View>
- )
+    renderItem = ({item}) => (
+        <View style={styles.item}>
+            { console.log(item)}
+            <TouchableOpacity onPress ={() => this.props.navigation.navigate('DeckDetail', { title:item.title})}>
+                <DeckItem item = {item}/>
+            </TouchableOpacity>
+        </View>
+    )
 
     render() {
 
         const { decks } = this.props
+        { console.log(decks)}
         const { ready } = this.state
 
         if (ready === false) {
@@ -50,7 +47,7 @@ class Decks extends Component {
                     renderItem={this.renderItem}
                     //keyExtractor={(item, index) => index}
                     keyExtractor={item => item.title}
-                    />
+                />
             </View>
         )
     }
@@ -58,25 +55,26 @@ class Decks extends Component {
 }
 
 const styles = StyleSheet.create({
- container: {
-  flex: 1,
-  paddingTop: 22
- },
-  item: {
-    backgroundColor: white,
-    borderRadius: Platform.OS === 'ios' ? 16 : 2,
-    padding: 10,
-    marginLeft: 10,
-    marginRight: 10,
-    marginTop: 17,
-    justifyContent: 'center',
-    shadowRadius: 3,
-    shadowOpacity: 0.8,
-    shadowColor: 'rgba(0, 0, 0, 0.24)',
-    shadowOffset: {
-      width: 0,
-      height: 3
+    container: {
+        flex: 1,
+        //paddingTop: 12,
+        //paddingHorizontal: 10
     },
+    item: {
+        backgroundColor: white,
+        borderRadius: Platform.OS === 'ios' ? 16 : 2,
+        //padding: 15,
+        marginLeft: 15,
+        marginRight: 15,
+        marginTop: 20,
+        justifyContent: 'center',
+        shadowRadius: 3,
+        shadowOpacity: 0.8,
+        shadowColor: 'rgba(0, 0, 0, 0.24)',
+        shadowOffset: {
+            width: 0,
+            height: 3
+        },
   },
   noDataText: {
     fontSize: 20,
