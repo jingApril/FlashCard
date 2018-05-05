@@ -1,14 +1,14 @@
 import React from 'react'
-import { Text,View, TouchableOpacity, StyleSheet, Platform } from 'react-native'
+import { Text,View, TouchableOpacity, StyleSheet, Platform,
+  Alert } from 'react-native'
 
 import { purple,white,gray,pink,black,green,red } from '../utils/colors'
 import NavigationBar from 'react-native-navbar';
-import { fetchDecks } from '../utils/api'
+import { fetchDecks, newCard, removeDeck} from '../utils/api'
 
 import DeckItem from './DeckItem'
 import { connect } from 'react-redux'
-import { addCard } from  '../actions'
-import { newCard } from '../utils/api'
+import { addCard, getDecks} from  '../actions'
 
 import AddCard from './AddCard'
 import TextButton from './TextButton'
@@ -22,31 +22,68 @@ class DeckDetail extends React.Component {
       }
    }
 
+
+   removeDeck = () => {
+		const { dispatch, title } = this.props
+		console.log(title)
+		Alert.alert('Delete', 'Are you sure you want to remove this Deck?',
+			[
+			 	{
+			 		text: 'No', onPress: () => {}
+			 	},
+			 	{
+			 		text: 'Yes', onPress: () => {
+			 			removeDeck(title)
+			 			this.props.navigation.goBack()
+			 		}
+			 	}
+			])
+	}
+
+
   render(){
 
-    const { item } = this.props
+    const { item, title } = this.props
 
-{  console.log(item)}
     return (
       <View style={styles.container}>
           <DeckItem item = {item}/>
-
           <TouchableOpacity
-              onPress ={() => this.props.navigation.navigate('AddCard', item)}
+              onPress ={() => this.props.navigation.navigate('AddCard',  item )}
               style={Platform.OS === 'ios' ? [styles.iosSubmitBtn,{backgroundColor: white}]: [styles.AndroidSubmitBtn,{backgroundColor: white}]}
           >
               <TextButton style={{color: purple}}>Add Card</TextButton>
           </TouchableOpacity>
 
-          <TouchableOpacity
-              onPress ={() => this.props.navigation.navigate('Quiz', item)}
-              style={Platform.OS === 'ios' ? [styles.iosSubmitBtn,{backgroundColor: purple}] :
-              [styles.AndroidSubmitBtn,{backgroundColor: purple}]}
-          >
-              <TextButton
-                  style={{color: white}}>Start Quiz
-              </TextButton>
-          </TouchableOpacity>
+
+
+
+
+          {item.questions.length > 0 ?
+             (
+               <TouchableOpacity
+                   onPress ={() => this.props.navigation.navigate('Quiz',  item )}
+                   style={Platform.OS === 'ios' ? [styles.iosSubmitBtn,{backgroundColor: purple}] :
+                   [styles.AndroidSubmitBtn,{backgroundColor: purple}]}
+               >
+                   <TextButton
+                       style={{color: white}}>Start Quiz
+                   </TextButton>
+               </TouchableOpacity>
+
+             )
+             :
+             ( <Text>No questions in this deck. Add cards first.</Text> )
+           }
+             <TouchableOpacity
+                 onPress={this.removeDeck}
+                 style={Platform.OS === 'ios' ? [styles.iosSubmitBtn,{backgroundColor: purple}] :
+                 [styles.AndroidSubmitBtn,{backgroundColor: purple}]}
+             >
+                 <TextButton
+                     style={{color: white}}>Remove Deck
+                 </TextButton>
+             </TouchableOpacity>
 
       </View>
     )
@@ -85,8 +122,6 @@ const styles = StyleSheet.create({
 
 function mapStateToProps (state, {navigation}) {
   const { title } = navigation.state.params
-    console.log(navigation.state.params)
-    console.log(state[title])
   	return 	{
         title,
         item: state[title],
@@ -94,8 +129,5 @@ function mapStateToProps (state, {navigation}) {
 
 }
 
-// function  mapDispatchToProps (dispatch, {navigation}){
-//  const {title} = navigation.state.params
-// }
 
 export default connect(mapStateToProps) (DeckDetail)

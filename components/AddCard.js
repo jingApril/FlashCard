@@ -1,56 +1,83 @@
 import React from 'react'
-import { View, Text, StyleSheet,  Dimensions, Platform, StatusBar, TouchableOpacity } from 'react-native'
+import { View, Text,TextInput, StyleSheet, KeyboardAvoidingView, Dimensions, Platform, StatusBar, TouchableOpacity } from 'react-native'
 import { connect } from 'react-redux'
+import { NavigationActions } from 'react-navigation'
 import { purple,white,black,gray,pink,red,green } from '../utils/colors'
-import { fetchDecks } from '../utils/api'
+
 import TextButton from './TextButton'
+import { addCard} from "../actions";
 
-class AddCard extends React.Component{
+function SubmitBtn({ onPress }) {
+  return (
 
-static navigationOptions = ({ navigation }) => ({
-   title: `${navigation.state.params.title} AddCard`
- });
-    state = {
-		question: '',
-        answer: '',
+    <TouchableOpacity
+        onPress ={onPress}
+        style={ Platform.OS === 'ios'
+        ? [styles.iosSubmitBtn,{backgroundColor: purple}]
+        : [styles.AndroidSubmitBtn,{backgroundColor: green}]}
+    >
+        <TextButton style={{color: white}}>SUBMIT</TextButton>
+    </TouchableOpacity>
+  )
+}
 
-	}
+
+class AddCard extends React.Component {
+
+   static navigationOptions = ({ navigation }) => ({
+        title: `${navigation.state.params.title} AddCard`
+   });
+
+  state = {
+     question: '',
+     answer: '',
+  }
+
+
+   submit = () => {
+
+
+  if ( this.state.question && this.state.answer )
+
+{
+  const deckName = this.props.navigation.state.params.title;
+  const card = {
+     question: this.state.question,
+     answer: this.state.answer
+  }
+
+  this.props.saveCard(deckName, card);
+  this.props.navigation.goBack()
+  console.log(deckName)
+  console.log(card)
+}
+      // save  to  "DB"
+
+      // clearn local notification
+
+    };
 
 	render () {
+    const { question, answer } = this.state
 
 		return(
-            <View style={styles.container}>
+       <KeyboardAvoidingView behavior="padding" style={styles.container}>
+         <Text style={styles.text}>Question:</Text>
+        <TextInput
+          style={styles.Input}
+          onChangeText={(question) => this.setState({question})}
+          value={question}
+        />
 
-                <Text style={styles.stat}>{`${counter + 1}/${questions.length}`}</Text>
+      <Text style={styles.text}>Answer:</Text>
+        <TextInput
+          style={styles.Input}
+          onChangeText={(answer) => this.setState({answer})}
+          value={answer}
+        />
+        <SubmitBtn onPress={this.submit} />
+      </KeyboardAvoidingView>
 
-                <Text style={styles.question}>
-                    {answer ? questions[counter].answer :
-                    questions[counter].question}
-                </Text>
-
-                <TouchableOpacity onPress={this.answer}>
-                    <Text style={styles.answer}>{answer ? `Hide answer` : `answer`}</Text>
-                </TouchableOpacity>
-
-                <View style={styles.container}>
-
-                    <TouchableOpacity
-                        onPress ={this.onCorrect}
-                        style={Platform.OS === 'ios' ? [styles.iosSubmitBtn,{backgroundColor: green}]: [styles.AndroidSubmitBtn,{backgroundColor: green}]}
-                    >
-                        <TextButton style={{color: white}}>Correct</TextButton>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        onPress ={this.onIncorrect}
-                        style={Platform.OS === 'ios' ? [styles.iosSubmitBtn,{backgroundColor: red}]: [styles.AndroidSubmitBtn,{backgroundColor: red}]}
-                    >
-                        <TextButton style={{color: white}}>Incorrect</TextButton>
-                    </TouchableOpacity>
-
-                </View>
-
-            </View>
 			)
     }
 }
@@ -79,38 +106,17 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginTop: 20,
     },
-    stat: {
-    	fontSize: 22,
-    	color: black,
-    	marginBottom: 20,
-        marginLeft: 10,
-    },
-	question: {
-		alignSelf: 'center',
-        fontSize: 32,
-        padding: 20,
-        fontWeight: 'bold',
-    	color: black,
-	},
-    answer: {
-        alignSelf: 'center',
-    	fontSize: 22,
-        color: red,
-    	marginBottom: 40,
-    },
-	score: {
-    	fontSize: 22,
-    	color: black,
-        textAlign: 'center',
-		marginTop: 10,
-		marginBottom: 20,
-    },
-    qna: {
-    	color: white,
-    	fontSize: 20,
-    	textAlign: 'center',
-    },
+    Input:{
+      margin: 15,
+      height: 40,
+        borderColor: 'gray',
+        borderWidth: 1,
 
+    },
+    text: {
+        fontSize: 30,
+        justifyContent: 'center'
+    },
 })
 
 
@@ -119,6 +125,13 @@ function mapStateToProps (state, {navigation}) {
   	return 	{
         title
     }
-
 }
-export default connect(mapStateToProps) (AddCard)
+
+function mapDispatchToProps(dispatch) {
+  return {
+    saveCard: (deckName, card) => dispatch(addCard(deckName, card))
+  };
+}
+
+
+export default connect(mapStateToProps,mapDispatchToProps) (AddCard)

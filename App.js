@@ -1,9 +1,11 @@
 import React from 'react'
 import { View,Text, StyleSheet, Platform, StatusBar} from 'react-native'
 import { createStore, applyMiddleware } from 'redux'
-import thunk from "redux-thunk";
+import thunkMiddleware from "redux-thunk"
 import { Provider } from 'react-redux'
 import reducer from './reducers'
+import { createLogger } from "redux-logger"
+import { composeWithDevTools } from "redux-devtools-extension"
 
 import  { TabNavigator, StackNavigator } from 'react-navigation'
 import {purple, white, red, blue } from './utils/colors'
@@ -96,7 +98,11 @@ const MainNavigator = StackNavigator({
   }
 });
 
-const store = createStore(reducer, applyMiddleware(thunk));
+const loggerMiddleware = createLogger();
+const store = createStore(
+  reducer,
+  composeWithDevTools(applyMiddleware(thunkMiddleware,loggerMiddleware))
+);
 
 export default class App extends React.Component {
   render() {
@@ -110,6 +116,8 @@ export default class App extends React.Component {
     );
   }
 }
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

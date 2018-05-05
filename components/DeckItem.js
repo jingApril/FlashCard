@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { View, StyleSheet, Text } from 'react-native'
 import { purple, pink } from '../utils/colors'
 
+
 export default function  DeckItem ({ item }) {
 		return (
 			<View style={styles.deck}>
@@ -12,7 +13,7 @@ export default function  DeckItem ({ item }) {
 					</Text> */}
 					<Text style={styles.length}>
 						{item.questions ? item.questions.length : 0}
-						{item.questions ? item.questions.length > 1 ? ` cards` : ` card` : 0 }
+						{item.questions ? item.questions.length > 1 ? ` cards` : ` card` : 0}
 					</Text>
 				</View>
 			</View>

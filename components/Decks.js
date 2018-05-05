@@ -14,17 +14,15 @@ class Decks extends Component {
       ready: false,
     }
 
-    componentDidMount () {
-        const { dispatch } = this.props
-        fetchDecks()
-            .then((decks) => dispatch(getDecks(decks)))
-            .then(() => this.setState(() => ({ready: true})))
-    }
+  componentDidMount() {
+    this.props.getDecks();
+    this.setState(() => ({ready: true}))
+  }
 
     renderItem = ({item}) => (
         <View style={styles.item}>
-            { console.log(item)}
-            <TouchableOpacity onPress ={() => this.props.navigation.navigate('DeckDetail', { title:item.title})}>
+       {console.log(item)}
+            <TouchableOpacity onPress ={() => this.props.navigation.navigate('DeckDetail', item)}>
                 <DeckItem item = {item}/>
             </TouchableOpacity>
         </View>
@@ -33,20 +31,21 @@ class Decks extends Component {
     render() {
 
         const { decks } = this.props
-        { console.log(decks)}
+
         const { ready } = this.state
 
         if (ready === false) {
             return <AppLoading />
         }
-
+  //     keyExtractor={item => item.title}
+{ console.log(decks)}
         return (
+
             <View style={styles.container}>
                 <FlatList
                     data={Object.values(decks)}
                     renderItem={this.renderItem}
-                    //keyExtractor={(item, index) => index}
-                    keyExtractor={item => item.title}
+                    keyExtractor={(item, index) => index.toString()}
                 />
             </View>
         )
@@ -57,8 +56,7 @@ class Decks extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        //paddingTop: 12,
-        //paddingHorizontal: 10
+
     },
     item: {
         backgroundColor: white,
@@ -90,4 +88,11 @@ function mapStateToProps (decks) {
   }
 }
 
-export default connect(mapStateToProps,)(Decks)
+
+function mapDispatchToProps(dispatch) {
+  return {
+    getDecks: () => dispatch(getDecks())
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Decks)
