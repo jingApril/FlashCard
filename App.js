@@ -18,6 +18,7 @@ import AddCard from './components/AddCard'
 import DeckDetail from './components/DeckDetail'
 import DeckItem from './components/DeckItem'
 import Quiz from './components/Quiz'
+import { setNotification } from './utils/notifications'
 
 
 function UdaciStatusBar ({backgroundColor, ...props}){
